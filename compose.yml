@@ -19,7 +19,7 @@ services:
     restart: 'unless-stopped'
     volumes:
       - './config/plex/config:/config'
-      - './config/plex/transcode>:/transcode'
+      - './config/plex/transcode:/transcode'
       - './downloads:/data'
   qbittorrent-wireguard:
     cap_add:
