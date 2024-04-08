@@ -1,0 +1,61 @@
+services:
+  qbittorrent-wireguard:
+    cap_add:
+      - 'NET_ADMIN'
+    cap_drop:
+      - 'AUDIT_CONTROL'
+      - 'BLOCK_SUSPEND'
+      - 'DAC_READ_SEARCH'
+      - 'IPC_LOCK'
+      - 'IPC_OWNER'
+      - 'LEASE'
+      - 'LINUX_IMMUTABLE'
+      - 'MAC_ADMIN'
+      - 'MAC_OVERRIDE'
+      - 'NET_BROADCAST'
+      - 'SYSLOG'
+      - 'SYS_ADMIN'
+      - 'SYS_BOOT'
+      - 'SYS_MODULE'
+      - 'SYS_NICE'
+      - 'SYS_PACCT'
+      - 'SYS_PTRACE'
+      - 'SYS_RAWIO'
+      - 'SYS_RESOURCE'
+      - 'SYS_TIME'
+      - 'SYS_TTY_CONFIG'
+      - 'WAKE_ALARM'
+    container_name: 'qbittorrent-wireguard'
+    entrypoint:
+      - '/bin/bash'
+      - '/start.sh'
+    environment:
+      - 'ENABLEPROTONVPNPORTFWD=1'
+      - 'LAN_NETWORK=${LAN_NETWORK}'
+      - 'PGID=${PGID}'
+      - 'PUID=${PUID}'
+      - 'QBT_LEGAL_NOTICE=confirm'
+      - 'TZ=America/Los_Angeles'
+      - 'WEBUI_PASS=${WEBUI_PASS}'
+      - 'WEBUI_URL=${WEBUI_URL}'
+      - 'WEBUI_USER=${WEBUI_USER}'
+    image: 'docker.io/tenseiken/qbittorrent-wireguard:latest'
+    ipc: 'private'
+    network_mode: 'bridge'
+    platform: 'linux/amd64'
+    ports:
+      - '8999:8999/tcp'
+      - '8999:8999/udp'
+      - '8080:8080/tcp'
+    privileged: true
+    restart: 'unless-stopped'
+    security_opt:
+      - 'label=disable'
+    stdin_open: true
+    sysctls:
+      - 'net.ipv4.conf.all.src_valid_mark=1'
+    tty: true
+    volumes:
+      - './downloads:/downloads'
+      - './config:/config'
+    working_dir: '/opt'

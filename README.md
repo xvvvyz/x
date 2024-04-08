@@ -1,0 +1,10 @@
+```
+# .env
+
+LAN_NETWORK=
+PGID=
+PUID=
+WEBUI_PASS=
+WEBUI_URL=
+WEBUI_USER=
+```
