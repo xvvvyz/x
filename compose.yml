@@ -51,7 +51,7 @@ services:
       - 'RESTART_CONTAINER=no'
       - 'TZ=${TZ}'
       - 'WEBUI_PASS=${WEBUI_PASS}'
-      - 'WEBUI_URL=http://${WAN_IP}:8080'
+      - 'WEBUI_URL=${WAN_ADDRESS}:8080'
       - 'WEBUI_USER=${WEBUI_USER}'
     image: 'docker.io/tenseiken/qbittorrent-wireguard:latest'
     ipc: 'private'
