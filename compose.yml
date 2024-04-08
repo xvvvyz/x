@@ -1,4 +1,26 @@
 services:
+  plex:
+    container_name: plex
+    environment:
+      - 'ADVERTISE_IP=http://${WAN_IP}:32400'
+      - 'PLEX_CLAIM=${PLEX_CLAIM}'
+      - 'TZ=${TZ}'
+    hostname: 'plex'
+    image: 'plexinc/pms-docker'
+    ports:
+      - '1900:1900/udp'
+      - '32400:32400/tcp'
+      - '32410:32410/udp'
+      - '32412:32412/udp'
+      - '32413:32413/udp'
+      - '32414:32414/udp'
+      - '32469:32469/tcp'
+      - '8324:8324/tcp'
+    restart: 'unless-stopped'
+    volumes:
+      - './config/plex/config:/config'
+      - './config/plex/transcode>:/transcode'
+      - './downloads:/data'
   qbittorrent-wireguard:
     cap_add:
       - 'NET_ADMIN'
@@ -31,13 +53,13 @@ services:
       - '/start.sh'
     environment:
       - 'ENABLEPROTONVPNPORTFWD=1'
-      - 'LAN_NETWORK=${LAN_NETWORK}'
+      - 'LAN_NETWORK=${WHITELIST_NETWORKS}'
       - 'PGID=${PGID}'
       - 'PUID=${PUID}'
       - 'QBT_LEGAL_NOTICE=confirm'
-      - 'TZ=America/Los_Angeles'
+      - 'TZ=${TZ}'
       - 'WEBUI_PASS=${WEBUI_PASS}'
-      - 'WEBUI_URL=${WEBUI_URL}'
+      - 'WEBUI_URL=http://${WAN_IP}'
       - 'WEBUI_USER=${WEBUI_USER}'
     image: 'docker.io/tenseiken/qbittorrent-wireguard:latest'
     ipc: 'private'
