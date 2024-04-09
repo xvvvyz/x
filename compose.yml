@@ -1,4 +1,17 @@
 services:
+  jellyfin:
+    container_name: jelly
+    environment:
+      - JELLYFIN_PublishedServerUrl=${JELLYFIN_URL}
+    image: jellyfin/jellyfin
+    restart: unless-stopped
+    user: ${PUID}:${PGID}
+    volumes:
+      - ./config/jelly/config:/config
+      - ./config/jelly/cache:/cache
+      - source: ./media
+        target: /media
+        type: bind
   nginx-proxy-manager:
     container_name: proxy
     environment:
@@ -15,19 +28,6 @@ services:
     volumes:
       - ./config/proxy/data:/data
       - ./config/proxy/letsencrypt:/etc/letsencrypt
-  plex-media-server:
-    container_name: plex
-    environment:
-      - PLEX_CLAIM=${PLEX_CLAIM}
-      - PLEX_GID=${PGID}
-      - PLEX_UID=${PUID}
-      - TZ=${TZ}
-    image: plexinc/pms-docker:latest
-    restart: unless-stopped
-    volumes:
-      - ./config/plex/config:/config
-      - ./config/plex/transcode:/transcode
-      - ./downloads:/data
   qbittorrent-wireguard:
     cap_add:
       - NET_ADMIN
@@ -51,8 +51,10 @@ services:
     sysctls:
       - net.ipv4.conf.all.src_valid_mark=1
     volumes:
-      - ./downloads:/downloads
       - ./config/torrent:/config
+      - source: ./media
+        target: /downloads
+        type: bind
 networks:
   default:
     external: true

@@ -1,11 +1,11 @@
 ```
 # .env
 
+JELLYFIN_URL=example.com
 PGID=1000
-PLEX_CLAIM=...
 PUID=1000
 QBITTORRENT_PASS=adminadmin
-QBITTORRENT_URL=...
+QBITTORRENT_URL=example.com
 QBITTORRENT_USER=admin
 SUBNET=...
 TZ=America/Los_Angeles
@@ -24,6 +24,7 @@ WebUI\Password_PBKDF2="@ByteArray(ARQ77eY1NUZaQsuDHbIMCA==:0WMRkYTUWVT9wVvdDtHAj
 ```
 
 ```
+mkdir -p media config/jelly/{config,cache}
 docker network create tv
 docker compose up -d
 ```
