@@ -3,7 +3,7 @@ services:
     container_name: jelly
     environment:
       - JELLYFIN_PublishedServerUrl=${JELLYFIN_URL}
-    image: jellyfin/jellyfin
+    image: jellyfin/jellyfin:latest
     restart: unless-stopped
     user: ${PUID}:${PGID}
     volumes:
