@@ -25,6 +25,6 @@ WebUI\Password_PBKDF2="@ByteArray(ARQ77eY1NUZaQsuDHbIMCA==:0WMRkYTUWVT9wVvdDtHAj
 
 ```
 mkdir -p media config/jelly/{config,cache}
-docker network create tv
+docker network create x
 docker compose up -d
 ```
