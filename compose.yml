@@ -23,7 +23,6 @@ services:
     ports:
       - 443:443
       - 80:80
-      - 81:81
     restart: unless-stopped
     volumes:
       - ./config/proxy/data:/data
