@@ -1,4 +1,9 @@
 ```
+mkdir -p media config/jelly/{config,cache}
+docker network create x
+```
+
+```
 # .env
 
 JELLYFIN_URL=example.com
@@ -24,7 +29,5 @@ WebUI\Password_PBKDF2="@ByteArray(ARQ77eY1NUZaQsuDHbIMCA==:0WMRkYTUWVT9wVvdDtHAj
 ```
 
 ```
-mkdir -p media config/jelly/{config,cache}
-docker network create x
 docker compose up -d
 ```
