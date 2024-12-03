@@ -1,5 +1,5 @@
 ```
-mkdir -p media config/jelly/{config,cache}
+mkdir -p media config/jelly/{config,cache} config/torrent/wireguard
 docker network create x
 ```
 
@@ -17,17 +17,21 @@ TZ=America/Los_Angeles
 ```
 
 ```
-# config/torrent/qBittorrent/config/qBittorrent.conf
-
-WebUI\Password_PBKDF2="@ByteArray(ARQ77eY1NUZaQsuDHbIMCA==:0WMRkYTUWVT9wVvdDtHAjU9b3b7uB8NR1Gur2hmQCvCDpm39Q+PsJRJPaCU51dEiz+dTzh8qbPsL8WkFljQYFQ==)"
-```
-
-```
 # config/torrent/wireguard/wg0.conf
 
 ...
 ```
 
 ```
+docker compose up -d
+```
+
+```
+go to qbt web ui -> settings -> advanced, set network interface to wg0
+update web ui username and password, update env file
+```
+
+```
+docker compose down
 docker compose up -d
 ```
