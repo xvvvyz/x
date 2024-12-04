@@ -27,8 +27,9 @@ docker compose up -d
 ```
 
 ```
+set up nginx proxy manager over socks proxy
 go to qbt web ui -> settings -> advanced, set network interface to wg0
-update web ui username and password, update env file
+update qbt web ui username and password, update env file
 ```
 
 ```
