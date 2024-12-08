@@ -1,17 +1,45 @@
 services:
+  flaresolverr:
+    container_name: flaresolverr
+    environment:
+      - TZ=${TZ}
+    image: ghcr.io/flaresolverr/flaresolverr:latest
+    restart: unless-stopped
   jelly:
     container_name: jelly
+    depends_on:
+      rclone:
+        condition: service_healthy
     environment:
       - JELLYFIN_PublishedServerUrl=${JELLYFIN_URL}
     image: jellyfin/jellyfin:latest
     restart: unless-stopped
     user: ${PUID}:${PGID}
     volumes:
-      - ./config/jelly/config:/config
       - ./config/jelly/cache:/cache
-      - source: ./media
-        target: /media
-        type: bind
+      - ./config/jelly/config:/config
+      - ./data/r2/media:/media
+  jellyseerr:
+    container_name: jellyseerr
+    depends_on:
+      jelly:
+        condition: service_started
+    environment:
+      - TZ=${TZ}
+    image: fallenbagel/jellyseerr:latest
+    restart: unless-stopped
+    volumes:
+      - ./config/jellyseerr:/app/config
+  prowlarr:
+    container_name: prowlarr
+    environment:
+      - PGID=${PGID}
+      - PUID=${PUID}
+      - TZ=${TZ}
+    image: lscr.io/linuxserver/prowlarr:develop
+    restart: unless-stopped
+    volumes:
+      - ./config/prowlarr:/config
   proxy:
     container_name: proxy
     environment:
@@ -27,6 +55,67 @@ services:
     volumes:
       - ./config/proxy/data:/data
       - ./config/proxy/letsencrypt:/etc/letsencrypt
+  radarr:
+    container_name: radarr
+    depends_on:
+      rclone:
+        condition: service_healthy
+    environment:
+      - PGID=${PGID}
+      - PUID=${PUID}
+      - TZ=${TZ}
+    image: lscr.io/linuxserver/radarr:latest
+    restart: unless-stopped
+    volumes:
+      - ./config/radarr:/config
+      - ./data/downloads:/data/downloads
+      - ./data/r2/media/movies:/data/movies
+  rclone:
+    cap_add:
+      - SYS_ADMIN
+    command: >
+      mount r2:x-data /mnt/volume/r2
+      --allow-other
+      --gid ${PGID}
+      --poll-interval 15s
+      --uid ${PUID}
+      --umask 002
+      --vfs-cache-max-age 10m
+      --vfs-cache-max-size 5G
+      --vfs-cache-mode full
+    container_name: rclone
+    devices:
+      - /dev/fuse
+    environment:
+      - PGID=${PGID}
+      - PUID=${PUID}
+      - RCLONE_CONFIG=/config/rclone.conf
+    healthcheck:
+      interval: 2s
+      retries: 5
+      test: ["CMD", "ls", "/mnt/volume/r2"]
+    image: rclone/rclone:latest
+    restart: unless-stopped
+    security_opt:
+      - apparmor:unconfined
+    volumes:
+      - ./config/rclone:/config
+      - ./data:/mnt/volume:shared
+  sonarr:
+    container_name: sonarr
+    depends_on:
+      rclone:
+        condition: service_healthy
+    environment:
+      - PGID=${PGID}
+      - PUID=${PUID}
+      - TZ=${TZ}
+    image: lscr.io/linuxserver/sonarr:latest
+    restart: unless-stopped
+    volumes:
+      - ./config/sonarr:/config
+      - ./data/downloads:/data/downloads
+      - ./data/r2/media/shows:/data/shows
   torrent:
     cap_add:
       - NET_ADMIN
@@ -51,9 +140,7 @@ services:
       - net.ipv4.conf.all.src_valid_mark=1
     volumes:
       - ./config/torrent:/config
-      - source: ./media
-        target: /downloads
-        type: bind
+      - ./data/downloads:/data/downloads
 networks:
   default:
     external: true
