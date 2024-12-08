@@ -1,4 +1,19 @@
 services:
+  bazarr:
+    container_name: bazarr
+    depends_on:
+      rclone:
+        condition: service_healthy
+    environment:
+      - PGID=${PGID}
+      - PUID=${PUID}
+      - TZ=${TZ}
+    image: lscr.io/linuxserver/bazarr:latest
+    restart: unless-stopped
+    volumes:
+      - ./config/bazarr:/config
+      - ./data/r2/media/movies:/data/movies
+      - ./data/r2/media/shows:/data/shows
   flaresolverr:
     container_name: flaresolverr
     environment:
@@ -61,6 +76,7 @@ services:
       rclone:
         condition: service_healthy
     environment:
+      - DOCKER_MODS=linuxserver/mods:radarr-striptracks
       - PGID=${PGID}
       - PUID=${PUID}
       - TZ=${TZ}
@@ -105,6 +121,7 @@ services:
       rclone:
         condition: service_healthy
     environment:
+      - DOCKER_MODS=linuxserver/mods:radarr-striptracks
       - PGID=${PGID}
       - PUID=${PUID}
       - TZ=${TZ}
