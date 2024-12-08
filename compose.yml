@@ -76,7 +76,6 @@ services:
       rclone:
         condition: service_healthy
     environment:
-      - DOCKER_MODS=linuxserver/mods:radarr-striptracks
       - PGID=${PGID}
       - PUID=${PUID}
       - TZ=${TZ}
@@ -121,7 +120,6 @@ services:
       rclone:
         condition: service_healthy
     environment:
-      - DOCKER_MODS=linuxserver/mods:radarr-striptracks
       - PGID=${PGID}
       - PUID=${PUID}
       - TZ=${TZ}
