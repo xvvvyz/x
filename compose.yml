@@ -1,9 +1,19 @@
+x-resources: &resources
+  resources:
+    limits:
+      cpus: 0.8
+      memory: 1.5G
+    reservations:
+      cpus: 0.5
+      memory: 1G
 services:
   bazarr:
     container_name: bazarr
     depends_on:
       rclone:
         condition: service_healthy
+    deploy:
+      <<: *resources
     environment:
       - PGID=${PGID}
       - PUID=${PUID}
@@ -16,6 +26,8 @@ services:
       - ./data/r2/media/shows:/data/shows
   flaresolverr:
     container_name: flaresolverr
+    deploy:
+      <<: *resources
     environment:
       - TZ=${TZ}
     image: ghcr.io/flaresolverr/flaresolverr:latest
@@ -25,6 +37,8 @@ services:
     depends_on:
       rclone:
         condition: service_healthy
+    deploy:
+      <<: *resources
     environment:
       - JELLYFIN_PublishedServerUrl=${JELLYFIN_URL}
     image: jellyfin/jellyfin:latest
@@ -39,6 +53,8 @@ services:
     depends_on:
       jelly:
         condition: service_started
+    deploy:
+      <<: *resources
     environment:
       - TZ=${TZ}
     image: fallenbagel/jellyseerr:latest
@@ -47,6 +63,8 @@ services:
       - ./config/jellyseerr:/app/config
   prowlarr:
     container_name: prowlarr
+    deploy:
+      <<: *resources
     environment:
       - PGID=${PGID}
       - PUID=${PUID}
@@ -57,6 +75,8 @@ services:
       - ./config/prowlarr:/config
   proxy:
     container_name: proxy
+    deploy:
+      <<: *resources
     environment:
       - DISABLE_IPV6=true
       - PGID=${PGID}
@@ -75,6 +95,8 @@ services:
     depends_on:
       rclone:
         condition: service_healthy
+    deploy:
+      <<: *resources
     environment:
       - PGID=${PGID}
       - PUID=${PUID}
@@ -97,6 +119,8 @@ services:
       --vfs-cache-max-size 10G
       --vfs-cache-mode full
     container_name: rclone
+    deploy:
+      <<: *resources
     devices:
       - /dev/fuse
     environment:
@@ -119,6 +143,8 @@ services:
     depends_on:
       rclone:
         condition: service_healthy
+    deploy:
+      <<: *resources
     environment:
       - PGID=${PGID}
       - PUID=${PUID}
@@ -133,6 +159,8 @@ services:
     cap_add:
       - NET_ADMIN
     container_name: torrent
+    deploy:
+      <<: *resources
     entrypoint:
       - /bin/bash
       - /start.sh
