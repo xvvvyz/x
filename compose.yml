@@ -88,7 +88,7 @@ services:
       --gid ${PGID}
       --uid ${PUID}
       --umask 002
-      --vfs-cache-max-size 16G
+      --vfs-cache-max-size 32G
       --vfs-cache-mode full
     container_name: rclone
     devices:
